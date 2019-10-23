@@ -5,6 +5,7 @@ extern crate amelioration;
 use std::io;
 
 use amelioration::util::event::{Event, Events};
+use chrono::{TimeZone, Utc};
 use termion::event::Key;
 use termion::input::MouseTerminal;
 use termion::raw::IntoRawMode;
@@ -50,6 +51,16 @@ fn main() -> Result<(), failure::Error> {
         (1571658675.0, 176.6),
         (1571745075.0, 174.8),
     ];
+    let start_date = Utc.timestamp(data[0].0.round() as i64, 0).to_rfc2822();
+    let mid_date = Utc
+        .timestamp(
+            ((data[data.len() - 1].0 + data[0].0) / 2.0).round() as i64,
+            0,
+        )
+        .to_rfc2822();
+    let end_date = Utc
+        .timestamp(data[data.len() - 1].0.round() as i64, 0)
+        .to_rfc2822();
 
     let app = App::new(data);
 
@@ -65,19 +76,19 @@ fn main() -> Result<(), failure::Error> {
                 )
                 .x_axis(
                     Axis::default()
-                        .title("X Axis")
+                        .title("Date")
                         .style(Style::default().fg(Color::Gray))
                         .labels_style(Style::default().modifier(Modifier::ITALIC))
                         .bounds(app.window)
                         .labels(&[
-                            &format!("{}", app.window[0]),
-                            &format!("{}", (app.window[0] + app.window[1]) / 2.0),
-                            &format!("{}", app.window[1]),
+                            &format!("{}", start_date),
+                            &format!("{}", mid_date),
+                            &format!("{}", end_date),
                         ]),
                 )
                 .y_axis(
                     Axis::default()
-                        .title("Y Axis")
+                        .title("Weight")
                         .style(Style::default().fg(Color::Gray))
                         .labels_style(Style::default().modifier(Modifier::ITALIC))
                         .bounds([170.0, 180.0])
