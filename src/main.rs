@@ -28,7 +28,7 @@ impl App {
     }
 }
 
-// one day => 86400000
+// one day => 86400.000
 
 fn main() -> Result<(), failure::Error> {
     let stdout = io::stdout().into_raw_mode()?;
