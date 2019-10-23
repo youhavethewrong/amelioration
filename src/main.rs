@@ -51,16 +51,15 @@ fn main() -> Result<(), failure::Error> {
         (1571658675.0, 176.6),
         (1571745075.0, 174.8),
     ];
-    let start_date = Utc.timestamp(data[0].0.round() as i64, 0).to_rfc2822();
-    let mid_date = Utc
-        .timestamp(
-            ((data[data.len() - 1].0 + data[0].0) / 2.0).round() as i64,
-            0,
-        )
-        .to_rfc2822();
-    let end_date = Utc
-        .timestamp(data[data.len() - 1].0.round() as i64, 0)
-        .to_rfc2822();
+
+    let dates: Vec<String> = data
+        .iter()
+        .map(|(d, _)| {
+            Utc.timestamp((d).round() as i64, 0)
+                .format("%a %b %e")
+                .to_string()
+        })
+        .collect();
 
     let app = App::new(data);
 
@@ -80,11 +79,7 @@ fn main() -> Result<(), failure::Error> {
                         .style(Style::default().fg(Color::Gray))
                         .labels_style(Style::default().modifier(Modifier::ITALIC))
                         .bounds(app.window)
-                        .labels(&[
-                            &format!("{}", start_date),
-                            &format!("{}", mid_date),
-                            &format!("{}", end_date),
-                        ]),
+                        .labels(&dates),
                 )
                 .y_axis(
                     Axis::default()
